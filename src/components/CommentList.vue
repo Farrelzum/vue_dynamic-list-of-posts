@@ -28,8 +28,9 @@ export default {
     };
   },
   methods: {
-    closeForm() {
+    clearForm() {
       this.wantAddComment = false;
+      this.errorMessage = "";
     },
     loadComments() {
       this.errorMessage = "";
@@ -54,19 +55,24 @@ export default {
     deleteComment(commentId) {
       this.errorMessage = "";
 
+      this.comments = this.comments.filter(
+        (comment) => comment.id !== commentId,
+      );
+
       deleteComment(commentId)
         .then(() => {
-          this.comments = this.comments.filter(
-            (comment) => comment.id !== commentId,
-          );
           this.closeForm();
         })
         .catch(() => (this.errorMessage = "Unable to delete comment"));
+    },
+    clearError() {
+      this.errors.message = '';
     },
   },
   watch: {
     postId() {
       this.loadComments();
+      this.wantAddComment = false;
     },
   },
   mounted() {
@@ -81,27 +87,27 @@ export default {
     <Notification
       v-if="errorMessage"
       :errorMessage="errorMessage"
-      @close="errorMessage = ''"
+      @close="clearError"
     />
     <template v-if="!isLoading">
       <div v-if="comments.length === 0 && !errorMessage" class="block">
         <p class="title is-4">No comments yet</p>
       </div>
-      <AddComment
-        v-if="wantAddComment"
-        :postId="postId"
-        @cancel="closeForm"
-        @success="addComment"
-      />
       <Comment
-        v-else
         v-for="comment of comments"
         :key="comment.id"
         :comment="comment"
         @delete="deleteComment"
       />
+      <AddComment
+        v-if="wantAddComment"
+        :postId="postId"
+        @clear="clearForm"
+        @success="addComment"
+      />
     </template>
     <button
+      v-if="this.wantAddComment === false"
       type="button"
       class="button is-link"
       @click="this.wantAddComment = true"

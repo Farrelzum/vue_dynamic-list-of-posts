@@ -2,6 +2,7 @@
 import { createPost } from "../api/posts";
 import InputField from "./InputField.vue";
 import TextAreaField from "./TextAreaField.vue";
+import Notification from "./Notification.vue";
 
 export default {
   name: "AddPost",
@@ -14,6 +15,7 @@ export default {
   components: {
     InputField,
     TextAreaField,
+    Notification,
   },
   data() {
     return {
@@ -22,6 +24,7 @@ export default {
       errors: {
         title: null,
         body: null,
+        message: "",
       },
       isSubmitting: false,
     };
@@ -43,8 +46,11 @@ export default {
 
       createPost({ title: this.title, body: this.body, userId: this.userId })
         .then((newPost) => this.$emit("success", newPost))
-        .catch(() => alert("Failed to add post"))
+        .catch(() => (this.errors.message = "Failed to create post!"))
         .finally(() => (this.isSubmitting = false));
+    },
+    clearError() {
+      this.errors.message = "";
     },
   },
 };
@@ -53,6 +59,11 @@ export default {
 <template>
   <div class="content">
     <h2>Create new post</h2>
+    <Notification
+      v-if="errors.message"
+      :errorMessage="errors.message"
+      @close="clearError"
+    />
 
     <form @submit.prevent="handleSubmit">
       <InputField

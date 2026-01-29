@@ -8,6 +8,7 @@ import Sidebar from "./components/Sidebar.vue";
 import Header from "./components/Header.vue";
 import AddPost from "./components/AddPost.vue";
 import EditPost from "./components/EditPost.vue";
+import Notification from "./components/Notification.vue";
 
 export default {
   name: "App",
@@ -20,6 +21,7 @@ export default {
     Sidebar,
     AddPost,
     EditPost,
+    Notification,
   },
   data() {
     return {
@@ -82,7 +84,7 @@ export default {
     addPost() {
       this.wantAddPost = true;
       this.isSidebarOpen = true;
-      this.selectedPostId = false;
+      this.selectedPostId = null;
     },
     setEditMode() {
       this.wantEditPost = true;
@@ -98,7 +100,10 @@ export default {
     },
     createPost(newPost) {
       this.posts.unshift(newPost);
-      this.closePost();
+      this.openPost(newPost.id);
+    },
+    clearNotification() {
+      this.errorMessage = "";
     },
   },
 };
@@ -107,20 +112,24 @@ export default {
 <template>
   <div class="ghost-wrapper">
     <template v-if="user">
-      <Header :name="user.name" @logout="logOut"/>
+      <Header :name="user.name" @logout="logOut" />
       <main class="section">
         <div class="container is-fluid">
+          <Loader v-if="isLoading" />
+          <Notification
+            v-if="errorMessage"
+            :errorMessage="errorMessage"
+            @close="clearNotification"
+          />
           <div class="columns">
-            <Loader v-if="isLoading" />
-
             <PostList
+              v-if="!isLoading && !errorMessage"
               :posts="posts"
               :selectedPostId="selectedPostId"
               @select="openPost"
               @close="closePost"
               @add="addPost"
               @edit="setEditMode"
-              v-else
             />
 
             <Sidebar :isSidebarOpen="isSidebarOpen">

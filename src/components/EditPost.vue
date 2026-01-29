@@ -1,6 +1,7 @@
 <script>
 import TextAreaField from "./TextAreaField.vue";
 import InputField from "./InputField.vue";
+import Notification from "./Notification.vue";
 import { editPost } from "@/api/posts";
 
 export default {
@@ -14,6 +15,7 @@ export default {
   components: {
     InputField,
     TextAreaField,
+    Notification,
   },
   data() {
     return {
@@ -22,6 +24,7 @@ export default {
       errors: {
         title: null,
         body: null,
+        message: "",
       },
       isSubmitting: false,
     };
@@ -43,16 +46,26 @@ export default {
 
       editPost({ id: this.post.id, title: this.title, body: this.body })
         .then((newPost) => this.$emit("success", newPost))
-        .catch(() => alert("Failed to load post"))
+        .catch(() => this.errors.message = "Failed to load post")
         .finally(() => (this.isSubmitting = false));
     },
   },
+  watch: {
+    title() {
+      this.errors.title = null;
+    },
+    body() {
+      this.errors.body = null;
+    },
+  }
 };
 </script>
 
 <template>
   <div class="content">
     <h2>Post editing</h2>
+
+    <Notification v-if="errors.message" :errorMessage="errors.message" @close="errors.message = ''"/>
 
     <form @submit.prevent="handleSubmit">
       <InputField

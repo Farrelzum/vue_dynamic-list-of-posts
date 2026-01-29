@@ -5,8 +5,8 @@ export default {
     name: {
       type: String,
       required: true,
-    }
-  }
+    },
+  },
 };
 </script>
 <template>
@@ -18,7 +18,7 @@ export default {
       <div class="navbar-item">
         <div class="buttons">
           <div class="mr-5 mb-2">
-            <p>User: {{ name }} </p>
+            <p>User: {{ name }}</p>
           </div>
 
           <a class="button is-light" @click="$emit('logout')"> Logout </a>

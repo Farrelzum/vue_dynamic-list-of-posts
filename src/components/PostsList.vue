@@ -24,8 +24,10 @@ export default {
             Add New Post
           </button>
         </div>
-
-        <table class="table is-fullwidth is-striped is-hoverable is-narrow">
+        <table
+          v-if="posts.length > 0"
+          class="table is-fullwidth is-striped is-hoverable is-narrow"
+        >
           <thead>
             <tr class="has-background-link-light">
               <th>ID</th>
@@ -58,6 +60,7 @@ export default {
             </tr>
           </tbody>
         </table>
+        <span v-else>No posts yet</span>
       </div>
     </div>
   </div>

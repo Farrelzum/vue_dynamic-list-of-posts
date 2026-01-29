@@ -2,6 +2,7 @@
 import { postComment } from "@/api/comments";
 import InputField from "./InputField.vue";
 import TextAreaField from "./TextAreaField.vue";
+import Notification from "./Notification.vue";
 
 export default {
   name: "AddComment",
@@ -14,6 +15,7 @@ export default {
   components: {
     InputField,
     TextAreaField,
+    Notification,
   },
   data() {
     return {
@@ -24,6 +26,7 @@ export default {
         name: null,
         email: null,
         body: null,
+        message: "",
       },
       isSubmitting: false,
     };
@@ -52,9 +55,26 @@ export default {
         email: this.email,
         body: this.body,
       })
-        .then((newComment) => this.$emit("success", newComment))
-        .catch(() => alert("Failed to add comment"))
+        .then((newComment) => {
+          this.$emit("success", newComment);
+          this.body = "";
+        })
+        .catch(() => (this.errors.message = "Failed to add comment"))
         .finally(() => (this.isSubmitting = false));
+    },
+    clearError() {
+      this.errors.message = "";
+    },
+  },
+  watch: {
+    name() {
+      this.errors.name = null;
+    },
+    email() {
+      this.errors.email = null;
+    },
+    body() {
+      this.errors.body = null;
     },
   },
 };
@@ -62,6 +82,11 @@ export default {
 
 <template>
   <div class="content">
+    <Notification
+      v-if="errors.message"
+      :errorMessage="errors.message"
+      @close="clearError"
+    />
     <form @submit.prevent="handleSubmit">
       <InputField
         v-model="name"
@@ -100,7 +125,7 @@ export default {
           <button
             type="button"
             class="button is-link is-light"
-            @click="$emit('cancel')"
+            @click="$emit('clear')"
           >
             Cancel
           </button>
