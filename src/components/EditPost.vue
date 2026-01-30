@@ -31,7 +31,8 @@ export default {
   },
   methods: {
     handleSubmit() {
-      this.errors = { title: "", body: "" };
+      this.errors.title = null;
+      this.errors.body = null;
 
       if (!this.title) {
         this.errors.title = "Title is required";
@@ -46,7 +47,7 @@ export default {
 
       editPost({ id: this.post.id, title: this.title, body: this.body })
         .then((newPost) => this.$emit("success", newPost))
-        .catch(() => this.errors.message = "Failed to load post")
+        .catch(() => this.errors.message = "Unable to save changes")
         .finally(() => (this.isSubmitting = false));
     },
   },

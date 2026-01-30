@@ -32,16 +32,18 @@ export default {
   transition-property: max-width, opacity;
   transition-duration: 0.5s;
   transition-timing-function: ease-in-out;
-
-  @media (min-width: 769px) {
-    max-width: 0;
-  }
 }
 
 .Sidebar--open {
   opacity: 1;
+}
 
-  @media (min-width: 769px) {
+@media (min-width: 769px) {
+  .Sidebar {
+    max-width: 0;
+  }
+
+  .Sidebar--open {
     max-width: 50%;
   }
 }

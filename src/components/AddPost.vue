@@ -31,7 +31,8 @@ export default {
   },
   methods: {
     handleSubmit() {
-      this.errors = { title: "", body: "" };
+      this.errors.title = null;
+      this.errors.body = null;
 
       if (!this.title) {
         this.errors.title = "Title is required";

@@ -50,7 +50,7 @@ export default {
     },
     addComment(newComment) {
       this.comments.push(newComment);
-      this.closeForm();
+      this.clearForm();
     },
     deleteComment(commentId) {
       this.errorMessage = "";
@@ -61,12 +61,12 @@ export default {
 
       deleteComment(commentId)
         .then(() => {
-          this.closeForm();
+          this.clearForm();
         })
         .catch(() => (this.errorMessage = "Unable to delete comment"));
     },
     clearError() {
-      this.errors.message = '';
+      this.errorMessage = '';
     },
   },
   watch: {
